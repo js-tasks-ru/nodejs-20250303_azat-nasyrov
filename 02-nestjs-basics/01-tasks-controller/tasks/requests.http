@@ -1,0 +1,28 @@
+### Create new task
+POST http://localhost:3000/tasks
+Content-Type: application/json
+
+{
+  "title": "Купить продукты",
+  "description": "Купить молоко и хлеб",
+  "status": "completed"
+}
+
+### Get task list
+GET http://localhost:3000/tasks
+
+### Get task by ID
+GET http://localhost:3000/tasks/2
+
+### Update an existing task
+PATCH http://localhost:3000/tasks/1
+Content-Type: application/json
+
+{
+  "title": "Сделать домашнюю работу",
+  "description": "Обновленное описание",
+  "status": "completed"
+}
+
+### Delete task by ID
+DELETE http://localhost:3000/tasks/3

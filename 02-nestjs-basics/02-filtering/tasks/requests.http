@@ -1,0 +1,11 @@
+### Getting a list of tasks by status
+GET http://localhost:3000/tasks?status=in_progress
+
+### Getting a list of tasks with pagination
+GET http://localhost:3000/tasks?page=1&limit=2
+
+### Getting a list of tasks with filtering and pagination
+GET http://localhost:3000/tasks?status=completed&page=100&limit=2
+
+### Getting a list of tasks with sort by title or status
+GET http://localhost:3000/tasks?sortBy=status

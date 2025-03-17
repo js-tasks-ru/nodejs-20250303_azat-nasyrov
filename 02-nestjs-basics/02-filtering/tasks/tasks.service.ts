@@ -1,5 +1,6 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, NotFoundException } from "@nestjs/common";
 import { Task, TaskStatus } from "./task.model";
+import { GetTasksDto } from "./dto/get-tasks.dto";
 
 @Injectable()
 export class TasksService {
@@ -36,9 +37,35 @@ export class TasksService {
     },
   ];
 
-  getFilteredTasks(
-    status?: TaskStatus,
-    page?: number,
-    limit?: number,
-  ): Task[] {}
+  public getFilteredTasks(getTasksDto: GetTasksDto): Task[] {
+    const { status, page = 1, sortBy, limit = this.tasks.length } = getTasksDto;
+
+    const filteredTasks = status
+      ? this.tasks.filter((task) => task.status === status)
+      : this.tasks;
+
+    if (filteredTasks.length === 0) {
+      throw new NotFoundException("No tasks found");
+    }
+
+    const sortedTasks = sortBy
+      ? [...filteredTasks].sort((a, b) => {
+          const valueA = a[sortBy];
+          const valueB = b[sortBy];
+
+          if (typeof valueA === "string" && typeof valueB === "string") {
+            return valueA.localeCompare(valueB);
+          }
+
+          return 0;
+        })
+      : filteredTasks;
+
+    const paginatedTasks = sortedTasks.slice((page - 1) * limit, page * limit);
+    if (paginatedTasks.length === 0) {
+      return [];
+    }
+
+    return paginatedTasks;
+  }
 }

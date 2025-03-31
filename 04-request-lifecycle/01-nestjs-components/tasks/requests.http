@@ -1,0 +1,30 @@
+### Create new task
+POST http://localhost:3000/tasks
+Content-Type: application/json
+x-role: admin
+
+{
+  "title": "Some title",
+  "description": "Some description",
+  "status": "completed"
+}
+
+### Get task list
+GET http://localhost:3000/tasks
+
+### Get task by ID
+GET http://localhost:3000/tasks/abc
+
+### Update an existing task
+PATCH http://localhost:3000/tasks/1
+Content-Type: application/json
+
+{
+  "title": "Updated title",
+  "description": "Updated description",
+  "status": "completed"
+}
+
+### Delete task by ID
+DELETE http://localhost:3000/tasks/1
+x-role: admin

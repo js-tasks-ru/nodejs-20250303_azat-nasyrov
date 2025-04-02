@@ -1,0 +1,22 @@
+### Create a new task
+POST http://localhost:3000/tasks
+Content-Type: application/json
+
+{
+  "title": "Сходить в спортзал",
+  "description": "Качественно потренироваться"
+}
+
+### Getting a list of tasks
+GET http://localhost:3000/tasks?page=1&limit=2
+
+### Update task by ID
+PATCH http://localhost:3000/tasks/1
+Content-Type: application/json
+
+{
+  "isCompleted": true
+}
+
+### Deleting a task by ID
+DELETE http://localhost:3000/tasks/3

@@ -14,6 +14,7 @@ import { Task } from "./entities/task.entity";
 import { CreateTaskDto } from "./dto/create-task.dto";
 import { UpdateTaskDto } from "./dto/update-task.dto";
 import { PaginationDto } from "./dto/pagination.dto";
+import { PaginationResponseInterface } from "./types/pagination-response.interface";
 
 @Controller("tasks")
 export class TasksController {
@@ -25,7 +26,9 @@ export class TasksController {
   }
 
   @Get()
-  public async findAll(@Query() paginationDto: PaginationDto): Promise<Task[]> {
+  public async findAll(
+    @Query() paginationDto: PaginationDto,
+  ): Promise<PaginationResponseInterface> {
     return await this.tasksService.findAll(paginationDto);
   }
 

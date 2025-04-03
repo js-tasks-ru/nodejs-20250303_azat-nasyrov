@@ -50,7 +50,7 @@ describe("TasksController (e2e)", () => {
         .get("/tasks")
         .expect(200);
 
-      expect(response.body).toEqual(
+      expect(response.body.data).toEqual(
         expect.arrayContaining([
           expect.objectContaining({
             id: 1,
@@ -65,6 +65,15 @@ describe("TasksController (e2e)", () => {
             isCompleted: true,
           }),
         ]),
+      );
+
+      expect(response.body).toEqual(
+        expect.objectContaining({
+          total: 2,
+          page: 1,
+          limit: 10,
+          totalPages: 1,
+        }),
       );
     });
   });

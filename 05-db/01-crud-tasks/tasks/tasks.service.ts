@@ -13,6 +13,7 @@ import {
   ERROR_TASK_NOT_FOUND,
   ERROR_UPDATE_TASK_FAILED,
 } from "./tasks.constants";
+import { PaginationResponseInterface } from "./types/pagination-response.interface";
 
 @Injectable()
 export class TasksService {
@@ -50,7 +51,9 @@ export class TasksService {
     }
   }
 
-  public async findAll(paginationDto: PaginationDto): Promise<Task[]> {
+  public async findAll(
+    paginationDto: PaginationDto,
+  ): Promise<PaginationResponseInterface> {
     let { page, limit } = paginationDto;
     page = Number(page);
     limit = Number(limit);
@@ -70,7 +73,13 @@ export class TasksService {
       });
 
       this.logger.log(`Retrieved ${data.length} tasks`);
-      return data;
+      return {
+        data,
+        total,
+        page,
+        limit,
+        totalPages: Math.ceil(total / limit),
+      };
     } catch (err) {
       this.logger.error("Error fetching tasks", err.stack);
       throw new HttpException(
@@ -80,16 +89,19 @@ export class TasksService {
     }
   }
 
+  private async getTaskById(id: number): Promise<Task> {
+    const task = await this.taskRepository.findOne({ where: { id } });
+    if (!task) {
+      this.logger.warn(`Task with ID ${id} not found`);
+      throw new HttpException(ERROR_TASK_NOT_FOUND, HttpStatus.NOT_FOUND);
+    }
+
+    return task;
+  }
+
   public async findOne(id: number): Promise<Task> {
     try {
-      const task = await this.taskRepository.findOne({ where: { id } });
-      if (!task) {
-        this.logger.warn(`Task with ID ${id} not found`);
-        throw new HttpException(ERROR_TASK_NOT_FOUND, HttpStatus.NOT_FOUND);
-      }
-
-      this.logger.log(`Found task: ${task.id}`);
-      return task;
+      return await this.getTaskById(id);
     } catch (err) {
       if (err instanceof HttpException) throw err;
       this.logger.error(`Error fetching task with ID ${id}`, err.stack);
@@ -107,10 +119,7 @@ export class TasksService {
 
     try {
       const taskRepository = queryRunner.manager.getRepository(Task);
-      const task = await taskRepository.findOne({ where: { id } });
-      if (!task) {
-        throw new HttpException(ERROR_TASK_NOT_FOUND, HttpStatus.NOT_FOUND);
-      }
+      const task = await this.getTaskById(id);
 
       Object.assign(task, updateTaskDto);
       const updatedTask = await taskRepository.save(task);
@@ -139,10 +148,7 @@ export class TasksService {
 
     try {
       const taskRepository = queryRunner.manager.getRepository(Task);
-      const task = await taskRepository.findOne({ where: { id } });
-      if (!task) {
-        throw new HttpException(ERROR_TASK_NOT_FOUND, HttpStatus.NOT_FOUND);
-      }
+      const task = await this.getTaskById(id);
 
       await taskRepository.delete(task.id);
       await queryRunner.commitTransaction();

@@ -1,4 +1,4 @@
-import { IsBoolean, IsNotEmpty, IsOptional, IsString } from "class-validator";
+import { IsBoolean, IsNotEmpty, IsString } from "class-validator";
 
 export class CreateTaskDto {
   @IsNotEmpty({ message: "The title must not be empty" })
@@ -9,7 +9,7 @@ export class CreateTaskDto {
   @IsString()
   readonly description: string;
 
-  @IsOptional()
+  @IsNotEmpty()
   @IsBoolean()
-  readonly isCompleted?: boolean
+  readonly isCompleted: boolean = false;
 }

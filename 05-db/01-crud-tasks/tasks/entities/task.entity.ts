@@ -11,6 +11,6 @@ export class Task {
   @Column({ type: "varchar", length: 255, nullable: false })
   description: string;
 
-  @Column({ type: "boolean", default: false, nullable: true })
-  isCompleted?: boolean;
+  @Column({ type: "boolean", default: false, nullable: false })
+  isCompleted: boolean;
 }

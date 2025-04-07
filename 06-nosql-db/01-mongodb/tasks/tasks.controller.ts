@@ -1,16 +1,17 @@
 import {
-  Controller,
-  Get,
-  Post,
   Body,
-  Patch,
-  Param,
+  Controller,
   Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
 } from "@nestjs/common";
+import { ObjectId } from "mongoose";
 import { TasksService } from "./tasks.service";
+import { TaskDocument } from "./schemas/task.schema";
 import { CreateTaskDto } from "./dto/create-task.dto";
 import { UpdateTaskDto } from "./dto/update-task.dto";
-import { ObjectId } from "mongoose";
 import { ObjectIDPipe } from "../objectid/objectid.pipe";
 
 @Controller("tasks")
@@ -18,20 +19,36 @@ export class TasksController {
   constructor(private readonly tasksService: TasksService) {}
 
   @Post()
-  create(@Body() createTaskDto: CreateTaskDto) {}
+  public async create(
+    @Body() createTaskDto: CreateTaskDto,
+  ): Promise<TaskDocument> {
+    return await this.tasksService.create(createTaskDto);
+  }
 
   @Get()
-  findAll() {}
+  public async findAll(): Promise<TaskDocument[]> {
+    return await this.tasksService.findAll();
+  }
 
   @Get(":id")
-  findOne(@Param("id", ObjectIDPipe) id: ObjectId) {}
+  public async findOne(
+    @Param("id", ObjectIDPipe) id: ObjectId,
+  ): Promise<TaskDocument> {
+    return await this.tasksService.findOne(id);
+  }
 
   @Patch(":id")
-  update(
+  public async update(
     @Param("id", ObjectIDPipe) id: ObjectId,
     @Body() updateTaskDto: UpdateTaskDto,
-  ) {}
+  ): Promise<TaskDocument> {
+    return await this.tasksService.update(id, updateTaskDto);
+  }
 
   @Delete(":id")
-  remove(@Param("id", ObjectIDPipe) id: ObjectId) {}
+  public async remove(
+    @Param("id", ObjectIDPipe) id: ObjectId,
+  ): Promise<TaskDocument> {
+    return await this.tasksService.remove(id);
+  }
 }

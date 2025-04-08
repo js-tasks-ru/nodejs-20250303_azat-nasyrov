@@ -49,7 +49,7 @@ export class TasksService {
       .exec();
 
     if (!updatedTask) {
-      this.logger.warn(`Task with ID: ${id} nto found`);
+      this.logger.warn(`Task with ID: ${id} not found`);
       throw new HttpException("Task not found", HttpStatus.NOT_FOUND);
     }
 

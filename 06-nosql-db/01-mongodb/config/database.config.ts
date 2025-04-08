@@ -7,22 +7,21 @@ export const getMongoConfig = (): MongooseModuleAsyncOptions => {
     useFactory: async (
       configService: ConfigService,
     ): Promise<{ uri: string }> => ({
-      uri: getMongoString(configService),
+      uri: getMongoUri(configService),
     }),
     inject: [ConfigService],
   };
 };
 
-const getMongoString = (configService: ConfigService): string =>
-  "mongodb://" +
-  (configService.get<string>("MONGO_LOGIN") || "") +
-  ":" +
-  (configService.get<string>("MONGO_PASSWORD") || "") +
-  "@" +
-  (configService.get<string>("MONGO_HOST") || "127.0.0.1") +
-  ":" +
-  (configService.get<string>("MONGO_PORT") || 27017) +
-  "/" +
-  (configService.get<string>("MONGO_DATABASE") || "test") +
-  "?authSource=" +
-  (configService.get<string>("MONGO_AUTHDATABASE") || "admin");
+const getMongoUri = (configService: ConfigService): string => {
+  const login = configService.get<string>("MONGO_LOGIN") || "";
+  const password = configService.get<string>("MONGO_PASSWORD") || "";
+  const host = configService.get<string>("MONGO_HOST") || "127.0.0.1";
+  const port = configService.get<number>("MONGO_PORT") || "27017";
+  const database = configService.get<string>("MONGO_DATABASE") || "test";
+  const authDatabase = configService.get<string>("MONGO_AUTHDATABASE") || "admin";
+
+  const credentials = login && password ? `${login}:${password}@` : "";
+
+  return `mongodb://${credentials}${host}:${port}/${database}?authSource=${authDatabase}`
+};

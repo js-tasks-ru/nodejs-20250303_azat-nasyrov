@@ -23,9 +23,9 @@ export class CreateTaskDto {
   @MaxLength(500, { message: "Description must be at most 500 characters" })
   readonly description: string;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsBoolean()
-  readonly isCompleted: boolean = false;
+  readonly isCompleted?: boolean = false;
 
   @IsOptional()
   @IsDate()

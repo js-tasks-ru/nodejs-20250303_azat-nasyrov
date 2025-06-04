@@ -1,17 +1,26 @@
-import { Controller, Get, Request } from "@nestjs/common";
+import { Controller, Get, Request, UseGuards } from "@nestjs/common";
 import { AuthService } from "./auth.service";
+import { JwtGuard } from "./guards/jwt.guard";
+import { AuthGuard } from "@nestjs/passport";
+import { Public } from "./decorators/public.decorator";
+import { RequestWithUserInterface } from "./types/express-request-with-user.interface";
+import { JwtPayloadInterface } from "./types/jwt-payload.interface";
 
 @Controller("auth")
 export class AuthController {
-  constructor(private authService: AuthService) {}
+  constructor(private readonly authService: AuthService) {}
 
+  @Public()
   @Get("google")
-  google() {
+  @UseGuards(AuthGuard("google"))
+  public google(): string {
     return "ok";
   }
 
+  @Public()
   @Get("google/callback")
-  async googleCallback(@Request() req) {
+  @UseGuards(AuthGuard("google"))
+  public async googleCallback(@Request() req): Promise<string> {
     const result = await this.authService.login(req.user);
 
     // Return an HTML payload that:
@@ -26,7 +35,7 @@ export class AuthController {
       <body>
         <p>wait until login is complete</p>
         <script>
-          localStorage.setItem('token', '${result.token}');
+          localStorage.setItem('token', '${result.accessToken}');
           window.location.href = '/';
         </script>
       </body>
@@ -35,7 +44,8 @@ export class AuthController {
   }
 
   @Get("profile")
-  profile(@Request() request) {
+  @UseGuards(JwtGuard)
+  public profile(@Request() request: RequestWithUserInterface): JwtPayloadInterface {
     return request.user;
   }
 }

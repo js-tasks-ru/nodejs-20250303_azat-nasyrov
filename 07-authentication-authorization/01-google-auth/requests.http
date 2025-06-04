@@ -1,0 +1,9 @@
+### Redirects the user to the Google OAuth login page
+GET http://localhost:3000/auth/google
+
+### Gets profile data from Google, issues/generates JWT for the user and redirects further
+GET http://localhost:3000/auth/google/callback
+
+### Returns the current user's profile (JWT-guard)
+GET http://localhost:3000/auth/profile
+Authorization: Bearer

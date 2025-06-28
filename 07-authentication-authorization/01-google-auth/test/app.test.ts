@@ -4,7 +4,7 @@ import * as request from "supertest";
 import { JwtService } from "@nestjs/jwt";
 import { AppModule } from "../app.module";
 import { UsersService } from "../users/users.service";
-import { GoogleStrategy } from "../auth/passport/google.strategy";
+import { GoogleStrategy } from "../auth/strategies/google.strategy";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { User } from "../users/entities/user.entity";
 import { Profile } from "passport-google-oauth20";

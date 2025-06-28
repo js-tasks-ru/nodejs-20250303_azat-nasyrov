@@ -6,18 +6,19 @@ import { InjectRepository } from "@nestjs/typeorm";
 @Injectable()
 export class UsersService {
   constructor(
-    @InjectRepository(User) private userRepository: Repository<User>,
+    @InjectRepository(User) private readonly userRepository: Repository<User>,
   ) {}
 
-  findOne(id: string) {
-    return this.userRepository.findOneBy({ id });
+  public async findOne(id: string): Promise<User> {
+    return await this.userRepository.findOneBy({ id });
   }
 
-  create(payload: Partial<User>) {
+  public async create(payload: Partial<User>): Promise<User> {
     const user = new User();
     user.id = payload.id;
     user.displayName = payload.displayName;
     user.avatar = payload.avatar;
-    return this.userRepository.save(user);
+
+    return await this.userRepository.save(user);
   }
 }
